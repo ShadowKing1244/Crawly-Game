@@ -1,0 +1,710 @@
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<style type="text/css">body {
+
+            font-family: 'Arial', sans-serif;
+
+            background-color: #f0f0f0;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            height: 100vh;
+
+            margin: 0;
+
+        }
+
+
+
+        .battle-container {
+
+            width: 600px;
+
+            height: 400px;
+
+            background: #d9d9d9;
+
+            border: 2px solid #000;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            position: relative;
+
+        }
+
+
+
+        .opponent, .player {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+
+        .status {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+        }
+
+
+
+        .name {
+
+            font-weight: bold;
+
+        }
+
+
+
+        .level {
+
+            margin-left: 5px;
+
+        }
+
+
+
+        .hp-bar {
+
+            width: 100px;
+
+            height: 10px;
+
+            background: #ffcccc;
+
+            border: 1px solid #000;
+
+            margin-top: 5px;
+
+            position: relative;
+
+        }
+
+
+
+        .hp-fill {
+
+            height: 100%;
+
+            background: #ff0000;
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+        }
+
+
+
+        .character-sprite {
+
+            width: 100px;
+
+            height: 100px;
+
+            transition: filter 0.3s;
+
+        }
+
+
+
+        .shake {
+
+            animation: shake 0.5s;
+
+        }
+
+
+
+        @keyframes shake {
+
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+
+        }
+
+
+
+        .highlight-red {
+
+            filter: hue-rotate(0deg) saturate(2) brightness(0.75);
+
+        }
+
+
+
+        .action-menu {
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            height: 100px;
+
+        }
+
+
+
+        .action-buttons {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            width: 100%;
+
+        }
+
+
+
+        .action-button {
+
+            padding: 10px;
+
+            background: #4CAF50;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            width: 23%;
+
+        }
+
+
+
+        .action-button:hover {
+
+            background: #45a049;
+
+        }
+
+
+
+        .message-box {
+
+            width: 100%;
+
+            background: #fff;
+
+            border: 1px solid #000;
+
+            border-radius: 5px;
+
+            padding: 10px;
+
+            text-align: center;
+
+        }
+
+
+
+        .hidden {
+
+            display: none;
+
+        }
+
+
+
+        .reset-button {
+
+            padding: 10px;
+
+            background: #f44336;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+
+        }
+
+
+
+        .reset-button:hover {
+
+            background: #d32f2f;
+
+        }
+
+
+
+        /* Embedded YouTube video styling */
+
+        .video-background {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            z-index: -1;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .video-foreground,
+
+        .video-background iframe {
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            pointer-events: none;
+
+        }
+</style>
+<div class="video-background">
+<div class="video-foreground"><iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/9-Zsgt74Q_w?autoplay=1&amp;loop=1&amp;playlist=9-Zsgt74Q_w"></iframe></div>
+</div>
+
+<div class="battle-container">
+<div class="opponent">
+<div class="status"><span class="name" id="enemy-name">Knight</span> <span class="level" id="enemy-level">Lv. 1</span>
+
+<div class="hp-bar">
+<div class="hp-fill" id="enemy-hp" style="width: 100%;">&nbsp;</div>
+</div>
+</div>
+<img alt="Enemy" class="character-sprite" id="enemy-sprite" src="https://banner2.cleanpng.com/20180810/elv/kisspng-knight-pixel-art-cartoon-pixilart-knightpixelart-by-anonymous-5b6dc04caf4598.5649980015339193087179.jpg" /></div>
+
+<div class="player"><img alt="Gnome" class="character-sprite" id="gnome-sprite" src="https://art.pixilart.com/2eb76e73246038b.png" />
+<div class="status"><span class="name">Gnome</span> <span class="level" id="gnome-level">Lv. 1</span>
+
+<div class="hp-bar">
+<div class="hp-fill" id="gnome-hp" style="width: 100%;">&nbsp;</div>
+</div>
+</div>
+</div>
+
+<div class="action-menu">
+<div class="action-buttons"><button class="action-button" onclick="attack()">Attack</button><button class="action-button" onclick="block()">Block</button><button class="action-button" onclick="heal()">Heal</button><button class="action-button hidden" id="crawlys-aid-button" onclick="crawlysAid()">Crawly&#39;s Aid</button></div>
+
+<div class="message-box" id="message-box">
+<p>What will Gnome do?</p>
+</div>
+<button class="reset-button hidden" id="reset-button" onclick="resetGame()">Reset</button></div>
+</div>
+<script>
+
+        const enemies = [
+
+            { name: 'Knight', hp: 100, maxHp: 100, sprite: 'https://banner2.cleanpng.com/20180810/elv/kisspng-knight-pixel-art-cartoon-pixilart-knightpixelart-by-anonymous-5b6dc04caf4598.5649980015339193087179.jpg' },
+
+            { name: 'Thief', hp: 80, maxHp: 80, sprite: 'https://avatars.githubusercontent.com/u/3717162?v=4' },
+
+            { name: 'Black Knight', hp: 120, maxHp: 120, sprite: 'https://i.redd.it/pijv5wnti2s21.png' },
+
+            { name: 'Goblin Sorceror', hp: 90, maxHp: 90, sprite: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG4k7KE10ipXovmSrR1eyYO1zk_H7f7uep-w&s' },
+
+            { name: 'Jousting Knight', hp: 110, maxHp: 110, sprite: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/108106d3-320f-43ed-a418-eeb2a9912755/d6rlfe5-5d579ace-b612-4c4a-a9eb-95c55c1001d7.gif/v1/fill/w_300,h_192/starbound__robot_jousting_guy_by_rhopunzel_d6rlfe5-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTkyIiwicGF0aCI6IlwvZlwvMTA4MTA2ZDMtMzIwZi00M2VkLWE0MTgtZWViMmE5OTEyNzU1XC9kNnJsZmU1LTVkNTc5YWNlLWI2MTItNGM0YS1hOWViLTk1YzU1YzEwMDFkNy5naWYiLCJ3aWR0aCI6Ijw9MzAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.-OOTOvBO7X3QCcbEPMSMFU6oUymCaUSmgKzK4ma9jt8' },
+
+            { name: 'Dragon (Stage 1)', hp: 150, maxHp: 150, sprite: 'https://banner2.cleanpng.com/20180618/ovs/kisspng-perler-beads-pixel-art-dragon-5b2836951d3d79.8771973415293620691198.jpg' },
+
+            { name: 'Dragon (Stage 2)', hp: 200, maxHp: 200, sprite: 'https://static.planetminecraft.com/files/resource_media/screenshot/1322/DragonPixelArt_5608866.jpg' },
+
+            { name: 'Dragon (Stage 3)', hp: 250, maxHp: 250, sprite: 'https://thumbs.dreamstime.com/b/vector-pixel-art-fire-dragon-isolated-cartoon-122274506.jpg' }
+
+        ];
+
+
+
+        let currentEnemyIndex = 0;
+
+        let playerTurn = true;
+
+
+
+        const gnome = {
+
+            name: 'Gnome',
+
+            hp: 100,
+
+            maxHp: 100,
+
+            level: 1,
+
+            sprite: 'https://art.pixilart.com/2eb76e73246038b.png'
+
+        };
+
+
+
+        let currentEnemy = { ...enemies[currentEnemyIndex] };
+
+
+
+        function updateHP(character) {
+
+            const hpFill = character.name === 'Gnome' ? document.getElementById('gnome-hp') : document.getElementById('enemy-hp');
+
+            hpFill.style.width = `${(character.hp / character.maxHp) * 100}%`;
+
+        }
+
+
+
+        function displayMessage(message) {
+
+            const messageBox = document.getElementById('message-box');
+
+            messageBox.innerText = message;
+
+        }
+
+
+
+        function attack() {
+
+            if (!playerTurn) return;
+
+            const damage = Math.floor(Math.random() * 20) + 10;
+
+            currentEnemy.hp -= damage;
+
+            displayMessage(`Gnome attacks for ${damage} damage!`);
+
+            shakeAndHighlight(currentEnemy.sprite, 'enemy-sprite');
+
+            updateHP(currentEnemy);
+
+
+
+            if (currentEnemy.hp <= 0) {
+
+                levelUp();
+
+                nextEnemy();
+
+            } else {
+
+                playerTurn = false;
+
+                setTimeout(enemyAttack, 1000);
+
+            }
+
+        }
+
+
+
+        function block() {
+
+            if (!playerTurn) return;
+
+            displayMessage('Gnome is blocking!');
+
+            playerTurn = false;
+
+            setTimeout(enemyAttack, 1000, true);
+
+        }
+
+
+
+        function heal() {
+
+            if (!playerTurn) return;
+
+            const healAmount = Math.floor(Math.random() * 20) + 10;
+
+            gnome.hp = Math.min(gnome.hp + healAmount, gnome.maxHp);
+
+            displayMessage(`Gnome heals for ${healAmount} HP!`);
+
+            updateHP(gnome);
+
+            playerTurn = false;
+
+            setTimeout(enemyAttack, 1000);
+
+        }
+
+
+
+        function enemyAttack(isBlocked = false) {
+
+            const damage = isBlocked ? Math.floor((Math.random() * 10) + 5) : Math.floor((Math.random() * 20) + 10);
+
+            gnome.hp -= damage;
+
+            displayMessage(`${currentEnemy.name} attacks for ${damage} damage!`);
+
+            shakeAndHighlight(gnome.sprite, 'gnome-sprite');
+
+            updateHP(gnome);
+
+
+
+            if (gnome.hp <= 0) {
+
+                displayMessage('Gnome has been defeated! Crawly is not proud of you.');
+
+                disableButtons();
+
+                document.getElementById('reset-button').classList.remove('hidden');
+
+            } else {
+
+                playerTurn = true;
+
+                if (gnome.hp < 30 && document.getElementById('crawlys-aid-button').classList.contains('hidden')) {
+
+                    document.getElementById('crawlys-aid-button').classList.remove('hidden');
+
+                }
+
+            }
+
+        }
+
+
+
+        function shakeAndHighlight(sprite, elementId) {
+
+            const element = document.getElementById(elementId);
+
+            element.classList.add('shake');
+
+            element.classList.add('highlight-red');
+
+            setTimeout(() => {
+
+                element.classList.remove('shake');
+
+                element.classList.remove('highlight-red');
+
+            }, 500);
+
+        }
+
+
+
+        function levelUp() {
+
+            gnome.level += 1;
+
+            gnome.hp = gnome.maxHp;
+
+            updateHP(gnome);
+
+            document.getElementById('gnome-level').innerText = `Lv. ${gnome.level}`;
+
+            displayMessage('Gnome leveled up!');
+
+        }
+
+
+
+        function nextEnemy() {
+
+            currentEnemyIndex += 1;
+
+            if (currentEnemyIndex >= enemies.length) {
+
+                displayMessage('God Slain!');
+
+                disableButtons();
+
+                document.getElementById('reset-button').classList.remove('hidden');
+
+                return;
+
+            }
+
+
+
+            currentEnemy = { ...enemies[currentEnemyIndex] };
+
+            document.getElementById('enemy-name').innerText = currentEnemy.name;
+
+            document.getElementById('enemy-level').innerText = `Lv. ${gnome.level}`;
+
+            document.getElementById('enemy-sprite').src = currentEnemy.sprite;
+
+            updateHP(currentEnemy);
+
+            playerTurn = true;
+
+        }
+
+
+
+        function disableButtons() {
+
+            const buttons = document.querySelectorAll('.action-button');
+
+            buttons.forEach(button => {
+
+                button.disabled = true;
+
+                button.style.background = '#999';
+
+            });
+
+        }
+
+
+
+        function resetGame() {
+
+            gnome.hp = gnome.maxHp;
+
+            gnome.level = 1;
+
+            currentEnemyIndex = 0;
+
+            currentEnemy = { ...enemies[currentEnemyIndex] };
+
+            updateHP(gnome);
+
+            updateHP(currentEnemy);
+
+            document.getElementById('gnome-level').innerText = `Lv. ${gnome.level}`;
+
+            document.getElementById('enemy-name').innerText = currentEnemy.name;
+
+            document.getElementById('enemy-level').innerText = `Lv. ${gnome.level}`;
+
+            document.getElementById('enemy-sprite').src = currentEnemy.sprite;
+
+            displayMessage('What will Gnome do?');
+
+            const buttons = document.querySelectorAll('.action-button');
+
+            buttons.forEach(button => {
+
+                button.disabled = false;
+
+                button.style.background = '#4CAF50';
+
+            });
+
+            document.getElementById('reset-button').classList.add('hidden');
+
+            document.getElementById('crawlys-aid-button').classList.add('hidden');
+
+            playerTurn = true;
+
+        }
+
+
+
+        function crawlysAid() {
+
+            displayMessage("Crawly's Aid activated! Swarm of gnomes defeat the opponent!");
+
+            currentEnemy.hp = 0;
+
+            updateHP(currentEnemy);
+
+            setTimeout(() => {
+
+                levelUp();
+
+                nextEnemy();
+
+            }, 1000);
+
+        }
+
+
+
+        function skipBattle() {
+
+            currentEnemy.hp = 0;
+
+            updateHP(currentEnemy);
+
+            levelUp();
+
+            nextEnemy();
+
+        }
+
+
+
+        document.addEventListener('keydown', (event) => {
+
+            if (event.code === 'Space') {
+
+                skipBattle();
+
+            }
+
+        });
+
+    </script>
